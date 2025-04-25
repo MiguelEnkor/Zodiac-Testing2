@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Horoscope Widget - Zodiac</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #00B764;
+      color: #333;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h2 {
+      font-size: 18px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    h4 {
+      font-size: 14px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #fff;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .fortune-box {
+      padding: 10px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .fortune-box h3 {
+      margin: 8px 0 6px;
+      font-size: 16px;
+    }
+    .fortune-box p {
+      margin: 0;
+      font-size: 14px;
+    }
+    .fortune-image {
+      width: 100%;
+      max-width: 100px;
+      height: auto;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h2 id="date-heading">🐲 YYYY년 M월 D일 띠별 운세</h2>
+  <h4>Today's Zodiac Fortunes</h4>
+  <div class="grid" id="all-fortunes"></div>
+
+  <script>
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    document.getElementById("date-heading").textContent = `🐲 ${year}년 ${month}월 ${day}일 띠별 운세`;
+
+    const signs = [
+      "rat", "ox", "tiger", "rabbit", "dragon", "snake",
+      "horse", "goat", "monkey", "rooster", "dog", "pig"
+    ];
+
+const fortunes = {
+  rat: [
+    "Today, I feel a spark of motivation returning to me.",
+    "I might overthink things, but I trust my gut in the end.",
+    "Small efforts feel bigger than usual today.",
+    "It’s okay to not be okay — I allow myself to feel everything.",
+    "Curiosity leads me somewhere unexpected.",
+    "A quiet moment today may bring loud clarity.",
+    "I feel torn between rushing and resting — I choose balance.",
+    "I notice the beauty in something ordinary.",
+    "Someone’s words might stay with me longer than expected.",
+    "I should speak less and observe more today.",
+    "My mind wants to race, but I will walk instead.",
+    "Discomfort is growth in disguise — I remind myself of that.",
+  ],
+  ox: [
+    "I should move carefully, but not aimlessly.",
+    "Consistency is hard, but today it feels grounding.",
+    "I take pride in showing up, even if no one sees it.",
+    "I feel stronger when I give myself time.",
+    "The day moves slowly, and that’s okay.",
+    "I hold space for others, but I don’t have to carry it all.",
+    "I honor my effort, not just the outcome.",
+    "Even when I doubt, I remain steady.",
+    "Rest today is not laziness — it’s preservation.",
+    "Patience feels hard, but I lean into it anyway.",
+    "I might be quiet, but I am deeply present.",
+    "Today reminds me that slow is not weak.",
+  ],
+  tiger: [
+    "I’m ready to face whatever challenges come my way.",
+    "My courage is quiet today, but steady.",
+    "There’s fire in me, even if it flickers.",
+    "I won’t apologize for being intense — I channel it instead.",
+    "Energy comes in waves, and I ride them today.",
+    "It’s not about winning today, it’s about staying true.",
+    "I lead better when I listen first.",
+    "Boldness is my nature — but I balance it with care.",
+    "Sometimes, holding back is the bravest thing I can do.",
+    "I can be fierce and gentle all at once.",
+    "Someone’s looking to me for direction — I stay grounded.",
+    "Every step forward matters, no matter how loud.",
+  ],
+  rabbit: [
+    "I move gently, but I don’t shrink.",
+    "Today, I protect my peace fiercely.",
+    "Kindness is my superpower, even when others don’t see it.",
+    "I breathe deeper when I slow down.",
+    "I make room for beauty, even in silence.",
+    "I deserve softness — especially from myself.",
+    "I don’t need to explain my sensitivity.",
+    "Today, I say no without guilt.",
+    "Being tender doesn't mean I’m weak.",
+    "I let go of tension I didn’t realize I was holding.",
+    "I can be soft and still unshakeable.",
+    "Peace is something I choose, not something I wait for.",
+  ],
+  dragon: [
+    "Today, I own my light — no shrinking.",
+    "Passion burns in me, even if I don’t show it.",
+    "I’m allowed to take up space.",
+    "My vision is big — I trust it’ll find its path.",
+    "Even dragons rest — today might be that day.",
+    "I lead best when I’m honest with myself.",
+    "Today isn’t about proving, it’s about aligning.",
+    "Confidence isn’t loud — mine is steady.",
+    "I release the need to control every outcome.",
+    "I don’t need applause to know I’m powerful.",
+    "Someone might misunderstand me — that’s okay.",
+    "I let my fire warm, not burn.",
+  ],
+  snake: [
+    "I trust my intuition more than the noise around me.",
+    "I speak only when the words feel true.",
+    "Stillness is not emptiness — it’s wisdom.",
+    "I don’t need to be understood by everyone.",
+    "I observe, I reflect, and I grow.",
+    "Not all knowledge is meant to be shared today.",
+    "I find clarity in silence.",
+    "I listen more than I speak today.",
+    "I move carefully, with intention.",
+    "Mystery isn’t something I wear — it’s who I am.",
+    "Patience gives me power others don’t see.",
+    "Today, I let insight guide my next step.",
+  ],
+  horse: [
+    "Freedom fuels me today.",
+    "I run toward what excites me — not what’s expected.",
+    "I let my body move and my thoughts follow.",
+    "Momentum feels good — but I still pause when needed.",
+    "I carry joy in motion.",
+    "I don’t fear change — I invite it.",
+    "Today, I trust my instinct to roam.",
+    "Even if I’m restless, I find direction.",
+    "My wildness has wisdom.",
+    "I’m not lost — I’m exploring.",
+    "Energy flows through me — I ride it gently.",
+    "I follow what lights me up.",
+  ],
+  goat: [
+    "I ground myself in calm today.",
+    "My softness is not a flaw — it’s a strength.",
+    "I move at my own pace and that’s enough.",
+    "I don’t need to rush clarity.",
+    "Being kind to myself is the bravest thing I can do today.",
+    "I find safety in simplicity.",
+    "I step back without fear of missing out.",
+    "I nourish what matters slowly.",
+    "I don’t need permission to rest.",
+    "Today, I keep things gentle and true.",
+    "What I plant today will bloom later.",
+    "Stability starts with me.",
+  ],
+  monkey: [
+    "My creativity surprises even me today.",
+    "I laugh first — even at myself.",
+    "I play with ideas, not pressure.",
+    "Curiosity is my guide.",
+    "I don’t force seriousness when joy feels right.",
+    "I follow the spark, not the script.",
+    "A clever shift can change everything.",
+    "Today’s mistakes might become tomorrow’s brilliance.",
+    "I don’t hide my weird — I celebrate it.",
+    "There’s mischief in my smile, and meaning in my words.",
+    "Fun isn’t a waste — it’s fuel.",
+    "Joy is a form of intelligence — I trust it.",
+  ],
+  rooster: [
+    "I start strong today — I love order and rhythm.",
+    "I find beauty in structure.",
+    "Discipline gives me peace.",
+    "I take pride in the details no one sees.",
+    "I feel clearer when my space reflects my mind.",
+    "I lead best when I prepare well.",
+    "There’s power in routine today.",
+    "I let plans anchor me, not restrict me.",
+    "Perfection isn’t required — only presence.",
+    "I speak honestly — but with care.",
+    "Today, I organize not to control, but to breathe better.",
+    "My clarity helps others feel safe.",
+  ],
+  dog: [
+    "Loyalty leads me — I show up for others.",
+    "I stand by my values, even when it’s hard.",
+    "I protect what I love fiercely.",
+    "I feel steady — even if things shift.",
+    "I hold trust like a gift.",
+    "Today, I offer quiet support.",
+    "I listen without needing to fix.",
+    "I keep promises, especially to myself.",
+    "My loyalty isn’t weakness — it’s courage.",
+    "I defend peace, not just people.",
+    "Someone might need my calm more than my words.",
+    "I choose presence over perfection.",
+  ],
+  pig: [
+    "I welcome comfort today without guilt.",
+    "I indulge in small joys that remind me I’m alive.",
+    "Pleasure is not a luxury — it’s a need.",
+    "I let laughter soften my stress.",
+    "I am allowed to want ease.",
+    "Today, I focus on feeling full — not just productive.",
+    "Gratitude makes everything enough.",
+    "I create cozy spaces within and around me.",
+    "It’s okay to slow down and savor.",
+    "I let warmth in — from myself and others.",
+    "I follow what feels kind to my spirit.",
+    "Joy doesn’t need to be earned.",
+  ],
+};
+
+    const names = {
+      rat: "Rat (쥐)", ox: "Ox (소)", tiger: "Tiger (호랑이)", rabbit: "Rabbit (토끼)",
+      dragon: "Dragon (용)", snake: "Snake (뱀)", horse: "Horse (말)", goat: "Goat (양)",
+      monkey: "Monkey (원숭이)", rooster: "Rooster (닭)", dog: "Dog (개)", pig: "Pig (돼지)"
+    };
+
+    const images = {
+      rat: "https://i.imgur.com/StglB2i.png",
+      ox: "https://i.imgur.com/Ob6a2oe.png",
+      tiger: "https://i.imgur.com/Hx4ubGL.png",
+      rabbit: "https://i.imgur.com/F4RXinh.png",
+      dragon: "https://i.imgur.com/wdLYXiX.png",
+      snake: "https://i.imgur.com/25tw1j7.png",
+      horse: "https://i.imgur.com/56hrHoO.png",
+      goat: "https://i.imgur.com/BKcJRnz.png",
+      monkey: "https://i.imgur.com/1tFQEM6.png",
+      rooster: "https://i.imgur.com/BW75NNG.png",
+      dog: "https://i.imgur.com/6fj1lYm.png",
+      pig: "https://i.imgur.com/3ZISm3K.png"
+    };
+
+    const container = document.getElementById("all-fortunes");
+
+    signs.forEach(key => {
+      const box = document.createElement("div");
+      box.className = "fortune-box";
+
+      const img = document.createElement("img");
+      img.className = "fortune-image";
+      img.src = images[key];
+      img.alt = names[key];
+      box.appendChild(img);
+
+      const title = document.createElement("h3");
+      title.textContent = names[key];
+      box.appendChild(title);
+
+      const para = document.createElement("p");
+      const todayKey = year * 10000 + month * 100 + day;
+      const index = todayKey % fortunes[key].length;
+      para.textContent = fortunes[key][index];
+      box.appendChild(para);
+
+      container.appendChild(box);
+    });
+  </script>
+</body>
+</html>
